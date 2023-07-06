@@ -7,19 +7,26 @@ function App() {
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState([]);
   //helper function
-  function addItem() {
+ async function addItem() {
 
     if (!newItem) {
       alert("please enter something");
       return;
     }
 
-    const item = {
-      id: Math.floor(Math.random() * 1000),
-      value: newItem
+    const obj = {
+     
+      item: newItem
     };
-    setItems(oldList => [...oldList, item]);
+        console.log(obj);
+     await axios.post("https://to-do-list-backend-0wqa.onrender.com/api/list",obj).then((response)=>{
+
+    console.log(response.data);
+   setItems(oldList => [...oldList, response.data]);
     setNewItem("");
+
+    })
+ 
   }
 
   function deleteitem(id){
@@ -31,8 +38,8 @@ function App() {
  const submit=(e)=>{
 
   e.preventDefault();
-  axios.post("https://to-do-list-backend-aied.onrender.com/api/ylist",items).then((response)=>{
-console.log(response);
+  axios.post("https://to-do-list-backend-0wqa.onrender.com/list",{}).then((response)=>{
+console.log(response.data);
 
   })
  }
@@ -72,3 +79,4 @@ console.log(response);
 }
 
 export default App;
+
