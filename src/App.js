@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 
@@ -6,6 +6,19 @@ import axios from 'axios';
 function App() {
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState([]);
+  useEffect(() => {
+    const getAllTodos = async ()=>{
+      await axios.get("https://to-do-list-backend-0wqa.onrender.com/api/list").then((res)=>{
+          console.log(res.data);
+          setItems([...res.data]); //expanding the array
+
+      }).catch((err)=>{
+          console.log(err);
+      })
+    }
+    getAllTodos()
+  }, [])
+
   //helper function
  async function addItem() {
 
@@ -22,7 +35,7 @@ function App() {
      await axios.post("https://to-do-list-backend-0wqa.onrender.com/api/list",obj).then((response)=>{
 
     console.log(response.data);
-   setItems(oldList => [...oldList, response.data]);
+    setItems(oldList => [response.data, ...oldList]);
     setNewItem("");
 
     })
@@ -31,14 +44,14 @@ function App() {
 
   function deleteitem(id){
 
-    const newarray=items.filter(item=>item.id!==id);
+    const newarray=items.filter(item=>item._id!==id);
     console.log(newarray);
     setItems(newarray);
   }
  const submit=(e)=>{
 
   e.preventDefault();
-  axios.post("https://to-do-list-backend-0wqa.onrender.com/list",{}).then((response)=>{
+  axios.post("https://to-do-list-backend-0wqa.onrender.com/api/list",{}).then((response)=>{
 console.log(response.data);
 
   })
@@ -65,10 +78,10 @@ console.log(response.data);
 
       </tr>
     
-        {items.map(item => {
+        {items.map(ele => {
           return (
             <tr className="tab1">
-          <td className="tab1"  key={item.id}>{item.value}<button onClick={()=>deleteitem(item.id)}> X</button></td>
+          <td className="tab1"  key={ele._id}>{ele.item}<button onClick={()=>deleteitem(ele._id)}> X</button></td>
           </tr>
           )
         })}
